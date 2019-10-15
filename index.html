@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ECDSA Secp256k1 Signature</title>
+    <title>Ecdsa Secp256k1 Signature 2019</title>
     <meta http-equiv='Content-Type' content='text/html;charset=utf-8'/>
     <!--
       === NOTA BENE ===
@@ -25,6 +25,7 @@
         // previousPublishDate:  "1977-03-15",
         // previousMaturity:  "WD",
 
+        
         // if there a publicly available Editor's Draft, this is the link
         edDraftURI:           "https://w3c-dvcg.github.io/lds-ecdsa-secp256k1-2019/",
 
@@ -38,8 +39,8 @@
         // editors, add as many as you like
         // only "name" is required
         editors:  [
-          { name: "Needs Editor", url: "http://localhost/",
-            company: "COMPANY", companyURL: "http://localhost/" }
+          { name: "Orie Steele", url: "https://transmute.industries/",
+            company: "Transmute Industries, Inc.", companyURL: "https://transmute.industries" }
         ],
 
         // authors, add as many as you like.
@@ -47,8 +48,8 @@
         // only "name" is required. Same format as editors.
 
         authors:  [
-          { name: "Needs Author", url: "http://localhost/",
-            company: "COMPANY", companyURL: "http://localhost/" }
+            { name: "Orie Steele", url: "https://transmute.industries/",
+            company: "Transmute Industries, Inc.", companyURL: "https://transmute.industries/" }
         ],
 
         // extend the bibliography entries
@@ -63,17 +64,6 @@
         // name (with the @w3c.org) of the public mailing to which comments are due
         wgPublicList: "public-digital-verification",
 
-        // URI of the patent status for this WG, for Rec-track documents
-        // !!!! IMPORTANT !!!!
-        // This is important for Rec-track documents, do not copy a patent URI from a random
-        // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
-        // Team Contact.
-        wgPatentURI:  "",
-        maxTocLevel: 4,
-        /*preProcess: [ webpayments.preProcess ],
-        alternateFormats: [ {uri: "diff-20111214.html", label: "diff to previous version"} ],
-        */
-        github: "https://github.com/w3c-dvcg/lds-ecdsa-secp256k1-2019",
         otherLinks: [{
           key: "Source control",
           data: [{
@@ -87,27 +77,38 @@
             href: "https://github.com/w3c-dvcg/lds-ecdsa-secp256k1-2019/issues/"
           }]
         }],
+
+        // URI of the patent status for this WG, for Rec-track documents
+        // !!!! IMPORTANT !!!!
+        // This is important for Rec-track documents, do not copy a patent URI from a random
+        // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+        // Team Contact.
+        wgPatentURI:  "",
+        maxTocLevel: 4,
+        /*preProcess: [ webpayments.preProcess ],
+        alternateFormats: [ {uri: "diff-20111214.html", label: "diff to previous version"} ],
+        */
         localBiblio:  {
           "RDF-DATASET-NORMALIZATION": {
             title:    "RDF Dataset Normalization 1.0",
             href:     "http://json-ld.github.io/normalization/spec/",
             authors:  ["David Longley", "Manu Sporny"],
-            status:   "CG-DRAFT",
+            status:   "Draft Community Group Report",
             publisher:  "JSON-LD Community Group"
           },
           "SECURITY-VOCABULARY": {
             title:    "Security Linked Data Vocabulary",
             href:     "https://web-payments.org/vocabs/security",
             authors:  ["Manu Sporny","David Longley"],
-            status:   "CG-DRAFT",
+            status:   "Draft Community Group Report",
             publisher:  "Web Payments Community Group"
           },
           "LD-SIGNATURES": {
             title:    "Linked Data Signatures 1.0",
-            href:     "https://web-payments.org/specs/source/ld-signatures/",
+            href:     "https://w3c-dvcg.github.io/ld-signatures/",
             authors:  ["David Longley", "Manu Sporny"],
-            status:   "CG-DRAFT",
-            publisher:  "Web Payments Community Group"
+            status:   "Draft Community Group Report",
+            publisher:  "Digital Verification Community Group"
           }
         }
       };
@@ -116,8 +117,8 @@
   <body>
     <section id='abstract'>
       <p>
-This specification describes a standard signature suite created in 2019 for the
-ECDSA Secp256k1 signature scheme.
+This specification describes the Ecdsa Secp256k1 Signature created in 2019 for the
+Linked Data Signatures specification.
       </p>
     </section>
 
@@ -130,8 +131,288 @@ is not fit for production deployment.
 
     <section>
       <h2>Introduction</h2>
-      <p class="issue" data-number="1"></p>
+      <p>
+This specification describes the Ecdsa Secp256k1 Signature created in 2019 for the
+Linked Data Signatures [[LD-SIGNATURES]] specification. It uses the RDF
+Dataset CANONICALIZATION Algorithm [[RDF-DATASET-CANONICALIZATION]] to transform the
+input document into its canonical form. It uses SHA-256 [[RFC6234]] as the
+<a>message digest algorithm</a> and ES256K JWS with Unencoded Payload Option defined in [[rfc7797]] as the <a>signature algorithm</a>.
+      </p>
     </section>
+
+    <section>
+      <h2>Terminology</h2>
+      <p>
+The following terms are used to describe concepts involved in the
+generation and verification of the Linked Data Signature 2019
+<a>signature suite</a>.
+      </p>
+
+      <dl>
+        <dt><dfn>signature suite</dfn></dt>
+        <dd>
+A specified set of cryptographic primitives typically consisting of
+a canonicalization algorithm, a message digest algorithm, and a signature
+algorithm that are bundled together by cryptographers for developers
+for the purposes of safety and convenience.
+        </dd>
+        <dt><dfn>canonicalization algorithm</dfn></dt>
+        <dd>
+An algorithm that takes an input document that has more than one possible
+representation and always transforms it into a canonical form. This process is
+sometimes also called CANONICALIZATION.
+        </dd>
+        <dt><dfn>message digest algorithm</dfn></dt>
+        <dd>
+An algorithm that takes an input message and produces a cryptographic
+output message that is often many orders of magnitude smaller than the
+input message. These algorithms are often 1) very fast, 2)
+non-reversible, 3) cause the output to change significantly when even one
+bit of the input message changes, and 4) make it infeasible to find two
+different inputs for the same output.
+        </dd>
+        <dt><dfn>signature algorithm</dfn></dt>
+        <dd>
+An algorithm that takes an input message and produces an output value where the
+receiver of the message can mathematically verify that the message has not
+been modified in transit and came from someone possessing a particular secret.
+        </dd>
+      </dl>
+
+      <section>
+        <h2>Linked Data Signature Terms</h2>
+        <p>
+  The following terms are used to describe concepts involved in the
+  generation and verification of signatures according to EcdsaSecp256k1Signature2019.
+        </p>
+  
+        <dl>
+          <dt><dfn>EcdsaSecp256k1Signature2019</dfn></dt>
+          <dd>
+            A JSON-LD Document has been signed with EcdsaSecp256k1Signature2019, 
+            when it contains a proof field, and that proof field contains a jws, as 
+            is defined by this spec.
+          </dd>
+
+          <dt><dfn>EcdsaSecp256k1VerificationKey2019</dfn></dt>
+          <dd>
+            A secp256k1 public key. If the key is embedded in a controller with property name publicKeyJwk, the key must be a valid JWK. If the key is embeded as publicKeyHex, it must be a compressed public key, and must be converted to JWK before being used to verify signatures according to JWS.
+          </dd>
+        </dl>
+  
+      </section>
+
+    </section>
+
+    <section>
+      <h2>Key Format</h2>
+
+	<section>
+      <h2>Examples</h2>
+
+      <p>
+JWK encoded public key example:
+      </p>
+
+      <pre class="example highlight">
+{
+  "@context": ["https://w3id.org/security/v1"],
+  "id": "did:example:123456789abcdefghi#keys-1",
+  "type": "EcdsaSecp256k1VerificationKey2019",
+  "controller": "did:example:123456789abcdefghi",
+  "expires": "2017-02-08T16:02:20Z",
+  "publicKeyJwk" : {
+    "crv": "secp256k1",
+    "kid": "JUvpllMEYUZ2joO59UNui_XYDqxVqiFLLAJ8klWuPBw",
+    "kty": "EC",
+    "x": "dWCvM4fTdeM0KmloF57zxtBPXTOythHPMm1HCLrdd3A",
+    "y": "36uMVGM7hnw-N6GnjFcihWE3SkrhMLzzLCdPMXPEXlA",
+  }
+}
+      </pre>
+
+      <p>Note: The <code>publicKeyJwk</code> property contains a key in JWK format.</p>
+
+      <p>
+        Hex encoded public key example:
+              </p>
+        
+              <pre class="example highlight">
+        {
+          "@context": ["https://w3id.org/security/v1"],
+          "id": "did:example:123456789abcdefghi#keys-1",
+          "type": "EcdsaSecp256k1VerificationKey2019",
+          "controller": "did:example:123456789abcdefghi",
+          "expires": "2017-02-08T16:02:20Z",
+          "publicKeyHex" : "034ee0f670fc96bb75e8b89c068a1665007a41c98513d6a911b6137e2d16f1d300"
+        }
+              </pre>
+        
+              <p>Note: The <code>publicKeyHex</code> MUST be converted to publicKeyJwk before it can be used to verify JWS.</p>
+              <p>Note: The <code>publicKeyHex</code> property contains a hex encoded compressed secp256k1 public key.</p>
+    </section>
+    </section>
+
+    <section>
+      <h2>Signature Format</h2>
+
+      <p>
+The 2019 Ecdsa Secp256k1 Signature <a>signature suite</a> MUST be used in
+conjunction with the signing and verification algorithms in the
+Linked Data Signatures [[LD-SIGNATURES]] specification. The suite consists of
+the following algorithms:
+      </p>
+
+      <table class="simple">
+        <thead>
+          <th>Parameter</th>
+          <th>Value</th>
+          <th>Specification</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>canonicalizationAlgorithm</td>
+            <td>https://w3id.org/security#GCA2015</td>
+            <td>[[RDF-DATASET-CANONICALIZATION]]</td>
+          </tr>
+          <tr>
+            <td>digestAlgorithm</td>
+            <td>https://www.ietf.org/assignments/jwa-parameters#SHA256</td>
+            <td>[[RFC6234]]</td>
+          </tr>
+          <tr>
+            <td>signatureAlgorithm</td>
+            <td><a href='https://tools.ietf.org/id/draft-jones-webauthn-secp256k1-00.html'>ES256K</a></td>
+            <td>[[rfc6979]]</td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    <section>
+      <h2>Modification to Algorithms</h2>
+
+      <p>
+This signature suite uses ECDSA over secp256k1 as described in [[rfc6979]]. 
+The signature algorithm relies on
+JWK encoded keys, and this flexibility supports integration with JOSE.
+
+The steps to construct and verify the digital signature are defined below.
+      <p>
+
+      <section>
+        <h3>Modifications to Signature Algorithm</h3>
+
+        <p>
+The <var>digital signature algorithm</var> defined:
+Signature Algorithm takes <var>tbs</var>, a <var>privateKey</var>,
+and </var><var>options</var> as inputs and produces a
+<var>signatureValue</var> as output.
+        </p>
+        <ol class="algorithm">
+          <li>
+Take <var>tbs</var>, which is the data to be signed, an private key and options dictionary as input to the signature suite.
+          </li>
+          <li>
+Perform the
+<a href="https://tools.ietf.org/html/draft-ietf-cose-webauthn-algorithms-01#section-3.2">sign</a> digital signature algorithm specified of
+[[rfc7797]] and return the result encoded as <em>jws</em>.
+          </li>
+          <li>
+            The <em>jws</em> will contain ".." per [[rfc7797]]:
+            <code>WpQlDT-K5bSPQwFkEKszo0XE1esubvol3K6UMe_...</code>.
+                      </li>
+        </ol>
+
+      </section>
+
+    <section>
+        <h3>Modifications to Signature Verification Algorithm</h3>
+
+        <p>
+The <var>digital signature algorithm</var> defined 
+Signature Verification Algorithm takes the value to be verified,
+<em>tbv</em>, the <em>public key</em> to the signature algorithm
+and returns a boolean value.
+        </p>
+        <ol class="algorithm">
+          <li>
+Take <var>tbv</var> and perform the
+<a href="https://tools.ietf.org/html/rfc7797">Sign</a>
+digital signature verification algorithm specified in <a href="https://tools.ietf.org/html/draft-ietf-cose-webauthn-algorithms-01#section-3.2">ES26K JOSE DRAFT</a>. If the result is a valid signature, return
+<code>true</code>, otherwise return <code>false</code>.
+          </li>
+        </ol>
+
+      </section>
+
+    </section>
+
+    <section>
+      <h2>Security Considerations</h2>
+      <p>
+The following section describes security considerations that developers
+implementing this specification should be aware of in order to create secure
+software.
+      </p>
+
+<div class="issue">TODO: We need to add a complete list of security
+considerations.</div>
+
+<ol class="security_considerations">
+  <li>
+    This Signature Suite relies on the security and assumptions made by ECDSA over secp256k1. 
+    We assume specifcally that sign and verify are implemented safely.
+  </li>
+</ol>
+    </section>
+
+
+    <section class="appendix">
+      <h2>Examples</h2>
+
+      <p>
+A simple example:
+      </p>
+
+      <pre class="example highlight">
+{
+  "@context": "https://w3id.org/security/v2",
+  "http://schema.org/action": "AuthenticateMe",
+  "proof": {
+    "challenge": "abc",
+    "created": "2019-01-16T20:13:10Z",
+    "domain": "example.com",
+    "proofPurpose": "authentication",
+    "verificationMethod": "https://example.com/i/alice/keys/2",
+    "type": "EcdsaSecp256k1Signature2019",
+    "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..QgbRWT8w1LJet_KFofNfz_TVs27z4pwdPwUHhXYUaFlKicBQp6U1H5Kx-mST6uFvIyOqrYTJifDijZbtAfi0MA"
+  }
+}
+           
+      </pre>
+
+      <p>
+        An example using DIDs:
+              </p>
+        
+              <pre class="example highlight">
+        {
+          "@context": "https://w3id.org/security/v2",
+          "http://schema.org/action": "AuthenticateMe",
+          "proof": {
+            "challenge": "abc",
+            "created": "2019-01-16T20:13:10Z",
+            "domain": "example.com",
+            "proofPurpose": "authentication",
+            "verificationMethod": "did:example:123#kid=JUvpllMEYUZ2joO59UNui_XYDqxVqiFLLAJ8klWuPBw",
+            "type": "EcdsaSecp256k1Signature2019",
+            "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..QgbRWT8w1LJet_KFofNfz_TVs27z4pwdPwUHhXYUaFlKicBQp6U1H5Kx-mST6uFvIyOqrYTJifDijZbtAfi0MA"
+          }
+        }
+                   
+              </pre>
+    </section>
+
   </body>
 </html>
-
